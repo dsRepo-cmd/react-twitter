@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import './index.css'
 import Box from '../../component/box'
 import PostContent from '../../component/post-content'
@@ -18,6 +18,7 @@ export default function Container({ id, username, text, date }) {
 
   const [status, setStatus] = useState(null)
   const [message, setMessage] = useState('')
+  const [listSize, setListSize] = useState(null)
 
   const getData = async () => {
     setStatus(LOAD_STATUS.PROGRESS)
@@ -26,7 +27,8 @@ export default function Container({ id, username, text, date }) {
       const res = await fetch(`http://localhost:4000/post-item?id=${data.id}`)
 
       const resData = await res.json()
-
+      console.log(resData.post.reply.length)
+      setListSize(resData.post.reply.length + 1)
       if (res.ok) {
         setData(convertData(resData))
         setStatus(LOAD_STATUS.SUCCESS)
@@ -59,11 +61,14 @@ export default function Container({ id, username, text, date }) {
   const [isOpen, setOpen] = useState(false)
 
   const handlleOpen = () => {
-    if (status === null) {
-      getData()
-    }
     setOpen(!isOpen)
   }
+
+  useEffect(() => {
+    if (isOpen === true) {
+      getData()
+    }
+  }, [isOpen])
 
   return (
     <Box style={{ padding: '0' }}>
@@ -86,14 +91,15 @@ export default function Container({ id, username, text, date }) {
               />
             </Box>
             {status === LOAD_STATUS.PROGRESS && (
-              <Fragment>
-                <Box>
-                  <Skeleton />
-                </Box>
-                <Box>
-                  <Skeleton />
-                </Box>
-              </Fragment>
+              <>
+                {Array.from({ length: listSize }, (_, index) => (
+                  <Fragment key={index}>
+                    <Box>
+                      <Skeleton />
+                    </Box>
+                  </Fragment>
+                ))}
+              </>
             )}
 
             {status === LOAD_STATUS.ERROR && (

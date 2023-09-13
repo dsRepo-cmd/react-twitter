@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import './index.css'
 
@@ -14,6 +14,7 @@ export default function Container() {
   const [status, setStatus] = useState(null)
   const [message, setMessage] = useState('')
   const [data, setData] = useState(null)
+  const [listSize, setListSize] = useState(0)
 
   const getData = async () => {
     setStatus(LOAD_STATUS.PROGRESS)
@@ -22,7 +23,7 @@ export default function Container() {
       const res = await fetch('http://localhost:4000/post-list')
 
       const data = await res.json()
-
+      setListSize(data.list.length + 1)
       if (res.ok) {
         setData(convertData(data))
         setStatus(LOAD_STATUS.SUCCESS)
@@ -35,7 +36,7 @@ export default function Container() {
       setStatus(LOAD_STATUS.ERROR)
     }
   }
-
+  console.log(listSize)
   const convertData = (raw) => ({
     list: raw.list.reverse().map(({ id, username, text, date }) => ({
       id,
@@ -47,7 +48,14 @@ export default function Container() {
     isEmpty: raw.list.length === 0,
   })
 
-  if (status === null) getData()
+  useEffect(() => {
+    getData()
+
+    // const intervalId = setInterval(() => getData(), 2000)
+    // return () => {
+    //   clearInterval(intervalId)
+    // }
+  }, [])
 
   return (
     <Grid>
@@ -63,14 +71,15 @@ export default function Container() {
       </Box>
 
       {status === LOAD_STATUS.PROGRESS && (
-        <Fragment>
-          <Box>
-            <Skeleton />
-          </Box>
-          <Box>
-            <Skeleton />
-          </Box>
-        </Fragment>
+        <>
+          {Array.from({ length: listSize }, (_, index) => (
+            <Fragment key={index}>
+              <Box>
+                <Skeleton />
+              </Box>
+            </Fragment>
+          ))}
+        </>
       )}
 
       {status === LOAD_STATUS.ERROR && (
