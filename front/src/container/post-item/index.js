@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useReducer, useState } from 'react'
 import './index.css'
 import Box from '../../component/box'
 import PostContent from '../../component/post-content'
@@ -6,39 +6,56 @@ import Grid from '../../component/grid'
 import PostCreate from '../post-create'
 import { Alert, LOAD_STATUS, Skeleton } from '../../component/load'
 import { getDate } from '../../util/getDate'
+import {
+  REQUEST_ACTION_TYPE,
+  requestInitialState,
+  requestReduiser,
+} from '../../util/request'
 
 export default function Container({ id, username, text, date }) {
-  const [data, setData] = useState({
-    id,
-    username,
-    text,
-    date,
-    reply: null,
-  })
+  const [state, dispatch] = useReducer(
+    requestReduiser,
+    requestInitialState,
+    (state) => ({ ...state, data: { id, username, text, date, reply: null } }),
+  )
+  // const [data, setData] = useState({
+  //   id,
+  //   username,
+  //   text,
+  //   date,
+  //   reply: null,
+  // })
 
-  const [status, setStatus] = useState(null)
-  const [message, setMessage] = useState('')
-  const [listSize, setListSize] = useState(null)
+  // const [status, setStatus] = useState(null)
+  // const [message, setMessage] = useState('')
+  // const [listSize, setListSize] = useState(null)
 
   const getData = async () => {
-    setStatus(LOAD_STATUS.PROGRESS)
+    dispatch({ type: REQUEST_ACTION_TYPE.PROGRESS })
 
     try {
-      const res = await fetch(`http://localhost:4000/post-item?id=${data.id}`)
+      const res = await fetch(
+        `http://localhost:4000/post-item?id=${state.data.id}`,
+      )
 
       const resData = await res.json()
-      console.log(resData.post.reply.length)
-      setListSize(resData.post.reply.length + 1)
+
       if (res.ok) {
-        setData(convertData(resData))
-        setStatus(LOAD_STATUS.SUCCESS)
+        dispatch({
+          type: REQUEST_ACTION_TYPE.SUCCESS,
+          payload: convertData(resData),
+        })
       } else {
-        setMessage(resData.message)
-        setStatus(LOAD_STATUS.ERROR)
+        dispatch({
+          type: REQUEST_ACTION_TYPE.ERROR,
+          payload: resData.message,
+        })
       }
     } catch (error) {
-      setMessage(error.message)
-      setStatus(LOAD_STATUS.ERROR)
+      dispatch({
+        type: REQUEST_ACTION_TYPE.ERROR,
+        payload: error.message,
+      })
     }
   }
 
@@ -60,7 +77,7 @@ export default function Container({ id, username, text, date }) {
 
   const [isOpen, setOpen] = useState(false)
 
-  const handlleOpen = () => {
+  const handleOpen = () => {
     setOpen(!isOpen)
   }
 
@@ -68,15 +85,16 @@ export default function Container({ id, username, text, date }) {
     if (isOpen === true) {
       getData()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   return (
     <Box style={{ padding: '0' }}>
-      <div onClick={handlleOpen} style={{ padding: '20px', cursor: 'pointer' }}>
+      <div onClick={handleOpen} style={{ padding: '20px', cursor: 'pointer' }}>
         <PostContent
-          username={data.username}
-          date={data.date}
-          text={data.text}
+          username={state.data.username}
+          date={state.data.date}
+          text={state.data.text}
         />
       </div>
       {isOpen && (
@@ -86,29 +104,33 @@ export default function Container({ id, username, text, date }) {
               <PostCreate
                 placeholder="Post your reply"
                 button="Reply"
-                id={data.id}
+                id={state.data.id}
                 onCreate={getData}
               />
             </Box>
-            {status === LOAD_STATUS.PROGRESS && (
+            {state.status === REQUEST_ACTION_TYPE.PROGRESS && (
               <>
-                {Array.from({ length: listSize }, (_, index) => (
-                  <Fragment key={index}>
-                    <Box>
-                      <Skeleton />
-                    </Box>
-                  </Fragment>
-                ))}
+                {state.data.reply &&
+                  state.data.reply.map((item) => (
+                    <Fragment key={item.id}>
+                      <Box>
+                        <Skeleton />
+                      </Box>
+                    </Fragment>
+                  ))}
+                <Box>
+                  <Skeleton />
+                </Box>
               </>
             )}
 
-            {status === LOAD_STATUS.ERROR && (
-              <Alert status={status} message={message} />
+            {state.status === REQUEST_ACTION_TYPE.ERROR && (
+              <Alert status={state.status} message={state.message} />
             )}
 
-            {status === LOAD_STATUS.SUCCESS &&
-              data.isEmpty === false &&
-              data.reply.map((item) => (
+            {state.status === REQUEST_ACTION_TYPE.SUCCESS &&
+              state.data.isEmpty === false &&
+              state.data.reply.map((item) => (
                 <Fragment key={item.id}>
                   <Box>
                     <PostContent {...item} />

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useReducer } from 'react'
 
 import './index.css'
 
@@ -9,34 +9,42 @@ import PostCreate from '../post-create'
 import PostItem from '../post-item'
 import { Alert, LOAD_STATUS, Skeleton } from '../../component/load'
 import { getDate } from '../../util/getDate'
+import {
+  requestInitialState,
+  requestReduiser,
+  REQUEST_ACTION_TYPE,
+} from '../../util/request'
 
 export default function Container() {
-  const [status, setStatus] = useState(null)
-  const [message, setMessage] = useState('')
-  const [data, setData] = useState(null)
-  const [listSize, setListSize] = useState(0)
+  const [state, dispatch] = useReducer(requestReduiser, requestInitialState)
 
   const getData = async () => {
-    setStatus(LOAD_STATUS.PROGRESS)
+    dispatch({ type: REQUEST_ACTION_TYPE.PROGRESS })
 
     try {
       const res = await fetch('http://localhost:4000/post-list')
 
       const data = await res.json()
-      setListSize(data.list.length + 1)
+
       if (res.ok) {
-        setData(convertData(data))
-        setStatus(LOAD_STATUS.SUCCESS)
+        dispatch({
+          type: REQUEST_ACTION_TYPE.SUCCESS,
+          payload: convertData(data),
+        })
       } else {
-        setData(convertData(data))
-        setStatus(LOAD_STATUS.ERROR)
+        dispatch({
+          type: REQUEST_ACTION_TYPE.ERROR,
+          payload: data.message,
+        })
       }
     } catch (error) {
-      setMessage(error.message)
-      setStatus(LOAD_STATUS.ERROR)
+      dispatch({
+        type: REQUEST_ACTION_TYPE.ERROR,
+        payload: error.message,
+      })
     }
   }
-  console.log(listSize)
+
   const convertData = (raw) => ({
     list: raw.list.reverse().map(({ id, username, text, date }) => ({
       id,
@@ -50,11 +58,7 @@ export default function Container() {
 
   useEffect(() => {
     getData()
-
-    // const intervalId = setInterval(() => getData(), 2000)
-    // return () => {
-    //   clearInterval(intervalId)
-    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -70,28 +74,32 @@ export default function Container() {
         </Grid>
       </Box>
 
-      {status === LOAD_STATUS.PROGRESS && (
+      {state.status === REQUEST_ACTION_TYPE.PROGRESS && (
         <>
-          {Array.from({ length: listSize }, (_, index) => (
-            <Fragment key={index}>
-              <Box>
-                <Skeleton />
-              </Box>
-            </Fragment>
-          ))}
+          {state.data &&
+            state.data.list.map((item) => (
+              <Fragment key={item.id}>
+                <Box>
+                  <Skeleton />
+                </Box>
+              </Fragment>
+            ))}
+          <Box>
+            <Skeleton />
+          </Box>
         </>
       )}
 
-      {status === LOAD_STATUS.ERROR && (
-        <Alert status={status} message={message} />
+      {state.status === REQUEST_ACTION_TYPE.ERROR && (
+        <Alert status={state.status} message={state.message} />
       )}
 
-      {status === LOAD_STATUS.SUCCESS && (
+      {state.status === LOAD_STATUS.SUCCESS && (
         <Fragment>
-          {data.isEmpty ? (
+          {state.data.isEmpty ? (
             <Alert message="Список постів пустий" />
           ) : (
-            data.list.map((item) => (
+            state.data.list.map((item) => (
               <Fragment key={item.id}>
                 <PostItem {...item} />
               </Fragment>
