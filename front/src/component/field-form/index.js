@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import './index.css'
 
-export default function Component({ placeholder, button, onSubmit }) {
+function Component({ placeholder, button, onSubmit }) {
   const [value, setValue] = useState('')
 
   const handleChange = (e) => setValue(e.target.value)
@@ -39,3 +39,5 @@ export default function Component({ placeholder, button, onSubmit }) {
     </div>
   )
 }
+
+export default memo(Component)

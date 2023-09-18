@@ -1,10 +1,10 @@
-import { Fragment, useEffect, useReducer, useState } from 'react'
+import { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
 import './index.css'
 import Box from '../../component/box'
 import PostContent from '../../component/post-content'
 import Grid from '../../component/grid'
 import PostCreate from '../post-create'
-import { Alert, LOAD_STATUS, Skeleton } from '../../component/load'
+import { Alert, Skeleton } from '../../component/load'
 import { getDate } from '../../util/getDate'
 import {
   REQUEST_ACTION_TYPE,
@@ -18,19 +18,8 @@ export default function Container({ id, username, text, date }) {
     requestInitialState,
     (state) => ({ ...state, data: { id, username, text, date, reply: null } }),
   )
-  // const [data, setData] = useState({
-  //   id,
-  //   username,
-  //   text,
-  //   date,
-  //   reply: null,
-  // })
 
-  // const [status, setStatus] = useState(null)
-  // const [message, setMessage] = useState('')
-  // const [listSize, setListSize] = useState(null)
-
-  const getData = async () => {
+  const getData = useCallback(async () => {
     dispatch({ type: REQUEST_ACTION_TYPE.PROGRESS })
 
     try {
@@ -57,7 +46,7 @@ export default function Container({ id, username, text, date }) {
         payload: error.message,
       })
     }
-  }
+  }, [state.data.id])
 
   const convertData = ({ post }) => ({
     id: post.id,
@@ -108,6 +97,7 @@ export default function Container({ id, username, text, date }) {
                 onCreate={getData}
               />
             </Box>
+
             {state.status === REQUEST_ACTION_TYPE.PROGRESS && (
               <>
                 {state.data.reply &&

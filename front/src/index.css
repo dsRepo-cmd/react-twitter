@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* AppPlus============================== */
+.pointer {
+  position: absolute;
+  background-color: pink;
+  border-radius: 50%;
+  opacity: 0.6;
+  pointer-events: none;
+  left: -20px;
+  top: -20px;
+  height: 40px;
+  width: 40px;
+}
+/* =================================== */
