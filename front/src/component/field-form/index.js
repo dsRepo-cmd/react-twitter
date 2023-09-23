@@ -1,8 +1,11 @@
-import { memo, useState } from 'react'
+import { memo, useContext, useState } from 'react'
 import './index.css'
+import { ThemeContext } from '../../App'
 
 function Component({ placeholder, button, onSubmit }) {
   const [value, setValue] = useState('')
+
+  const theme = useContext(ThemeContext)
 
   const handleChange = (e) => setValue(e.target.value)
 
@@ -19,6 +22,7 @@ function Component({ placeholder, button, onSubmit }) {
   }
 
   const isDisabled = value.length === 0
+
   return (
     <div className="field-form">
       <textarea
@@ -32,7 +36,7 @@ function Component({ placeholder, button, onSubmit }) {
       <button
         disabled={isDisabled}
         onClick={handleSubmit}
-        className="field-form__button"
+        className={`field-form__button field-form__button--${theme.value}`}
       >
         {button}
       </button>
