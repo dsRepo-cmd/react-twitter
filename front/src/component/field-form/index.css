@@ -19,8 +19,8 @@
 }
 
 .field-form__button--dark {
-  color: #000;
-  background-color: gray;
+  color: #fcfcfc;
+  background-color: #2b2a2a;
 }
 
 .field-form__button:disabled {

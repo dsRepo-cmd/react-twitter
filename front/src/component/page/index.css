@@ -1,8 +1,16 @@
-.page {
+.page__section {
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 32px;
   margin: 0 auto;
   max-width: 600px;
+}
+
+.page {
+  min-height: 100vh;
+  transition: all 1s ease;
+}
+.page--dark {
+  background-color: #5c5c5c;
 }

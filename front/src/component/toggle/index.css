@@ -1,0 +1,71 @@
+/* ---------------------------------- */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+
+  align-self: flex-end;
+  padding: 20px;
+}
+
+.btn-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 60px;
+  height: 30px;
+
+  transition: all 1s ease;
+
+  position: relative;
+  border-radius: 30px;
+  cursor: pointer;
+  border: 1px solid #e6e6e6;
+}
+.btn-box--dark {
+  background-color: #5c5c5c;
+  border: 1px solid #3d3d3d;
+}
+
+.ball {
+  width: 30px;
+  height: 30px;
+  background-color: #0050ff;
+  transition: all 1s ease;
+
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgb(196, 196, 196);
+}
+
+.ball--dark {
+  transform: translatex(100%);
+  background-color: #2b2a2a;
+  border: 1px solid black;
+}
+
+.scenary {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  transition: all 1s ease;
+  padding: 5px;
+}
+.sun {
+  background-image: url('./sun.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+
+  width: 25px;
+  height: 25px;
+}
+
+.moon {
+  background-image: url('./moon.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+
+  width: 22px;
+  height: 22px;
+}

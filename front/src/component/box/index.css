@@ -4,4 +4,5 @@
   border: 1px solid #e6e6e6;
   border-radius: 4px;
   padding: 20px;
+  transition: all 1s ease;
 }
