@@ -1,7 +1,14 @@
+import { useContext } from 'react'
 import './index.css'
+import { ThemeContext } from '../../App'
 
 export function Alert({ message, status = 'default' }) {
-  return <div className={`alert alert--${status}`}>{message}</div>
+  const theme = useContext(ThemeContext)
+  return (
+    <div className={`alert alert--${theme.value} alert--${status}`}>
+      {message}
+    </div>
+  )
 }
 
 export function Loader() {

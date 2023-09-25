@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50">
+  <!-- Фон с внутренней тенью -->
+  <rect x="0" y="0" width="100" height="50" rx="25" ry="25" fill="#ccc" filter="url(#innerShadow)" />
+
+  <!-- Кнопка -->
+  <circle cx="25" cy="25" r="20" fill="#fff" />
+
+  <!-- Тень для кнопки -->
+  <circle cx="25" cy="25" r="20" fill="none" stroke="#000" stroke-opacity="0.2" stroke-width="2" />
+  
+  <!-- Эффект внутренней тени -->
+
+</svg>

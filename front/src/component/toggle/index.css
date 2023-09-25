@@ -22,10 +22,12 @@
   border-radius: 30px;
   cursor: pointer;
   border: 1px solid #e6e6e6;
+  box-shadow: 3px 3px 8px 0px #47474773;
 }
 .btn-box--dark {
   background-color: #5c5c5c;
-  border: 1px solid #3d3d3d;
+  border: 1px solid #5a5a5a;
+  box-shadow: 3px 3px 8px 0px #02020273;
 }
 
 .ball {
@@ -37,12 +39,14 @@
   position: absolute;
   border-radius: 50%;
   border: 1px solid rgb(196, 196, 196);
-}
 
+  background: radial-gradient(closest-side, #7499e9, #0050ff);
+}
 .ball--dark {
   transform: translatex(100%);
   background-color: #2b2a2a;
-  border: 1px solid black;
+  border: 1px solid rgb(68, 68, 68);
+  background: radial-gradient(closest-side, #a5a5a5, #535353);
 }
 
 .scenary {
@@ -56,6 +60,7 @@
   background-image: url('./sun.svg');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: contain;
 
   width: 25px;
   height: 25px;
@@ -65,6 +70,7 @@
   background-image: url('./moon.svg');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: contain;
 
   width: 22px;
   height: 22px;

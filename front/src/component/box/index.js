@@ -10,7 +10,7 @@ export default function Component({ children, className = '', style = {} }) {
         ...style,
         background: theme.value === THEME_TYPE.DARK && '#bbbbbb',
       }}
-      className={`box ${className}`}
+      className={`box ${className} box--${theme.value}`}
     >
       {children}
     </div>

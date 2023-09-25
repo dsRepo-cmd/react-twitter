@@ -11,7 +11,7 @@ function Component({ username, text, date }) {
         <span className="post-content__date">{date}</span>
       </div>
 
-      <p className="post-content__text">{text}</p>
+      <pre className="post-content__text">{text}</pre>
     </Grid>
   )
 }

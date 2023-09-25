@@ -87,7 +87,7 @@ export default function Container({ id, username, text, date }) {
         />
       </div>
       {isOpen && (
-        <div style={{ padding: '0 20px 20px 20px' }}>
+        <div className="post-item" style={{ padding: '0 20px 20px 20px' }}>
           <Grid>
             <Box className="post-item__inside-box">
               <PostCreate
